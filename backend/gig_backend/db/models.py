@@ -4,6 +4,7 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 
 class User(BaseModel):
     username = db.Column(db.String(80), unique=True, nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='user')
     password_hash = db.Column(db.String(128), nullable=False)
 
     def set_password(self, password):
