@@ -5,3 +5,5 @@ def get_database_url(filename="app.db"):
     return f"sqlite:///{os.path.join(basedir, filename)}"
 
 SECRET_KEY = "super-secret-key" #put this in env before production
+ALGORITHM = "HS256"
+ADMIN_PASSWORD = "london" #obviously this is not secure
