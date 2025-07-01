@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from gig_backend.db.models import User, db
-from utils import SECRET_KEY, ALGORITHM
-import jwt
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -44,21 +42,14 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid username or password"}), 401
 
+    claims = {"role": user.role}
+
     # Create JWT token
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id), additional_claims=claims)
     return jsonify(access_token=access_token), 200
 
-@auth_bp.route('/verify', methods=['POST'])
+@auth_bp.route('/verify', methods=['GET'])
+@jwt_required()
 def verify():
-    data = request.get_json()
-    token = data.get('token')
-
-    if not token:
-        return jsonify({'valid': False}), 400
-
-    try:
-        jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return jsonify({'valid': True}), 200
-    except Exception as e:
-        print("Decode error:", e)
-        return jsonify({'valid': False, 'error': str(e)}), 401
+    claims = get_jwt()
+    return jsonify({'valid': True, 'claims': claims}), 200
