@@ -39,6 +39,7 @@ def register_admin():
 
     username = data.get('username')
     password = data.get('password')
+    role = data.get('role')
 
     if not username or not password:
         return jsonify({"error": "Username and password required"}), 400
@@ -50,7 +51,7 @@ def register_admin():
     # Create new user
     new_user = User(username=username)
     new_user.set_password(password)
-    new_user.role = "admin"
+    new_user.role = role
 
     db.session.add(new_user)
     db.session.commit()

@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { UserContext } from './UserContext';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
+
+const { Option } = Select;
 
 const CreateAdminAccountForm = ({ onSuccess }) => {
     const [form] = Form.useForm();
@@ -53,6 +55,17 @@ const CreateAdminAccountForm = ({ onSuccess }) => {
         rules={[{ required: true, message: 'Please input your password!' }]}
       >
         <Input.Password />
+      </Form.Item>
+
+      <Form.Item
+        label="Role"
+        name="role"
+        rules={[{ required: true, message: 'Please select a role!' }]}
+      >
+        <Select placeholder="Select a role">
+          <Option value="admin">admin</Option>
+          <Option value="user">user</Option>
+        </Select>
       </Form.Item>
 
       <Form.Item>

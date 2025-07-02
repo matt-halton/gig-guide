@@ -23,36 +23,54 @@ const CalendarPage = () => {
   const { user } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState('month');
+  const [favouriteEventIds, setFavouriteEventIds] = useState([]);
 
   const handleEventClick = async (event) => {
-    if (!user?.id) {
+  if (!user?.id) {
     console.error("User not logged in.");
     return;
-    }
+  }
+
+  const isFavourite = favouriteEventIds.includes(event.id);
 
     try {
-        const res = await fetch('http://localhost:5000/gigs/add_favourite', {
+        const url = isFavourite
+        ? 'http://localhost:5000/gigs/remove_favourite'
+        : 'http://localhost:5000/gigs/add_favourite';
+
+        const res = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             user_id: user.id,
-            event_id: event.id
-        })
+            event_id: event.id,
+        }),
         });
 
         const data = await res.json();
 
         if (res.ok) {
-        console.log("Favourite created!", data);
+        console.log(isFavourite ? "Favourite removed!" : "Favourite created!", data);
+
+        // Update local state immediately:
+        setFavouriteEventIds((prev) => {
+            if (isFavourite) {
+            return prev.filter((id) => id !== event.id);
+            } else {
+            return [...prev, event.id];
+            }
+        });
+
         } else {
         console.error("Server error:", data.error);
         }
-    } catch (error) {
-    console.error("Request failed:", error);
-    }
+
+        } catch (error) {
+        console.error("Request failed:", error);
+        }
   };
 
   useEffect(() => {
@@ -83,6 +101,30 @@ const CalendarPage = () => {
     fetchEvents();
   }, [token]);
 
+  useEffect(() => {
+  const fetchFavourites = async () => {
+    if (!user?.id) return;
+
+    try {
+      const res = await fetch('http://localhost:5000/gigs/user_favourites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ user_id: user.id }),
+      });
+      const data = await res.json();
+      // Assuming the response is an array of gig IDs or objects with id
+      setFavouriteEventIds(data.map(fav => fav.id));
+    } catch (error) {
+      console.error('Error fetching favourites:', error);
+    }
+  };
+
+  fetchFavourites();
+}, [user, token]);
+
   return (
     <div style={{ height: '80vh', padding: '20px' }}>
       <Calendar
@@ -97,6 +139,18 @@ const CalendarPage = () => {
         titleAccessor="title"
         style={{ height: '100%', backgroundColor: 'white' }}
         onSelectEvent={handleEventClick}
+          eventPropGetter={(event) => {
+        if (favouriteEventIds.includes(event.id)) {
+            return {
+                style: {
+                backgroundColor: 'red',
+                color: 'white',
+                borderRadius: '4px',
+            },
+        };
+        }
+        return {};
+        }}
       />
     </div>
   );

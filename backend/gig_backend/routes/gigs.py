@@ -76,6 +76,26 @@ def add_favourite():
 
     return jsonify({"message": "Favourite created", "user_id": user_id}), 201
 
+@gig_bp.route('/remove_favourite', methods=['POST'])
+@jwt_required()
+def remove_favourite():
+    data = request.get_json()
+
+    user_id = data.get('user_id')
+    event_id = data.get('event_id')
+
+    if not all([user_id, event_id]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    existing = Favourite.query.filter_by(user_id=user_id, event_id=event_id).first()
+    if not existing:
+        return jsonify({"message": "Favourite already absent", "user_id": user_id}), 200
+
+    db.session.delete(existing)
+    db.session.commit()
+
+    return jsonify({"message": "Favourite removed", "user_id": user_id}), 200
+
 @gig_bp.route('/user_favourites', methods=['POST'])
 @jwt_required()
 def get_user_favourites():
