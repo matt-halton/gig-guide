@@ -1,17 +1,18 @@
 import React, { useContext } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
 import { UserContext } from './UserContext';
+import { Form, Input, Button, Checkbox } from 'antd';
 
-const LoginForm = ({ onSuccess }) => {
+const CreateAdminAccountForm = ({ onSuccess }) => {
     const [form] = Form.useForm();
-    const { login } = useContext(UserContext);
+    const { token } = useContext(UserContext);
 
     const handleSubmit = async (values) => {
         try {
-            const response = await fetch('http://localhost:5000/auth/login', {
+            const response = await fetch('http://localhost:5000/auth/register_admin', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify(values),
         });
@@ -19,8 +20,7 @@ const LoginForm = ({ onSuccess }) => {
         const data = await response.json();
 
         if (response.ok) {
-            console.log('Token', data.access_token, 'User', data.user);
-            login(data.access_token, data.user);
+            console.log('User created:', data);
             form.resetFields();
             if (onSuccess) onSuccess();
         } else {
@@ -29,13 +29,13 @@ const LoginForm = ({ onSuccess }) => {
 
         } catch (error) {
             console.error('Request failed:', error);
-            }
+        }
     };
 
-    return (
+  return (
     <Form
         form={form}
-        name="login"
+        name="createAccount"
         layout="vertical"
         onFinish={handleSubmit}
     >
@@ -57,11 +57,11 @@ const LoginForm = ({ onSuccess }) => {
 
       <Form.Item>
         <Button type="primary" htmlType="submit" block>
-          Log In
+          Create Account
         </Button>
       </Form.Item>
     </Form>
   );
 };
 
-export default LoginForm;
+export default CreateAdminAccountForm;

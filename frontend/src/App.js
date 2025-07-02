@@ -3,7 +3,9 @@ import { Layout, Menu, Button, Modal, Row, Col } from 'antd';
 import LoginForm from './LoginForm';
 import CreateAccountForm from './CreateAccountForm';
 import ProtectedRoute from './ProtectedRoute';
-import EventsPage from './EventsPage';
+import AdminPage from './AdminPage';
+import CalendarPage from './CalendarPage';
+import FavouritesPage from './FavouritesPage';
 import { UserContext } from './UserContext';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
@@ -63,15 +65,19 @@ const App = () => {
                     <Menu
                         theme="dark"
                         mode="horizontal"
-                        style={{ minWidth: 300 }}
+                        style={{ minWidth: 350 }}
                         defaultSelectedKeys={['1']}
                         items={[
                         { key: '1', label: 'Home' },
-                        { key: '2', label: 'Events' },
+                        { key: '2', label: 'Admin' },
+                        { key: '3', label: 'Calendar' },
+                        { key: '4', label: 'Favourites' },
                         ]}
                         onClick={({ key }) => {
                         if (key === '1') navigate('/');
-                        if (key === '2') navigate('/events');
+                        if (key === '2') navigate('/admin');
+                        if (key === '3') navigate('/calendar');
+                        if (key === '4') navigate('/favourites');
                         }}
                     />
                 </div>
@@ -105,7 +111,9 @@ const App = () => {
       <Content style={{ padding: '24px', minHeight: '80vh' }}>
         <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/events" element={<EventsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/favourites" element={<FavouritesPage />} />
         </Routes>
       </Content>
 

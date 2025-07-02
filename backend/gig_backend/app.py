@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from gig_backend.auth.auth_routes import auth_bp
+from gig_backend.routes.auth import auth_bp
+from gig_backend.routes.gigs import gig_bp
 from gig_backend.db import db
 from utils import get_database_url, SECRET_KEY
 from datetime import timedelta
@@ -22,6 +23,7 @@ def create_app():
     jwt.init_app(app)
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(gig_bp)
 
     @app.route('/test')
     def test():
