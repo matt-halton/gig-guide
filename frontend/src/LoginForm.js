@@ -25,6 +25,7 @@ const LoginForm = ({ onSuccess }) => {
             if (onSuccess) onSuccess();
         } else {
             console.error('Error:', data.error || 'Unknown error');
+            alert(data.error || 'Login failed');
         }
 
         } catch (error) {

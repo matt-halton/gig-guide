@@ -28,6 +28,7 @@ const CalendarPage = () => {
   const handleEventClick = async (event) => {
   if (!user?.id) {
     console.error("User not logged in.");
+    alert('User not logged in.');
     return;
   }
 

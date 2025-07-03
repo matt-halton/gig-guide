@@ -12,7 +12,7 @@ with app.app_context():
     db.create_all()
 
     if not User.query.filter_by(role='admin').first():
-        admin = User(username='matt', role='admin')
+        admin = User(username='matt', role='admin', verified=True)
         admin.set_password(ADMIN_PASSWORD)
         db.session.add(admin)
         db.session.commit()

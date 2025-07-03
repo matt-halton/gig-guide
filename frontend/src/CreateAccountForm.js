@@ -22,6 +22,7 @@ const CreateAccountForm = ({ onSuccess }) => {
             if (onSuccess) onSuccess();
         } else {
             console.error('Error:', data.error || 'Unknown error');
+            alert(data.error || 'Account creation failed');
         }
 
         } catch (error) {
@@ -36,6 +37,15 @@ const CreateAccountForm = ({ onSuccess }) => {
         layout="vertical"
         onFinish={handleSubmit}
     >
+
+      <Form.Item
+        label="Email"
+        name="email"
+        rules={[{ required: true, message: 'Please input your email!' }]}
+      >
+        <Input />
+      </Form.Item>
+
       <Form.Item
         label="Username"
         name="username"

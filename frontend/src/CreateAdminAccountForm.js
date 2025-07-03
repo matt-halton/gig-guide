@@ -10,7 +10,7 @@ const CreateAdminAccountForm = ({ onSuccess }) => {
 
     const handleSubmit = async (values) => {
         try {
-            const response = await fetch('http://localhost:5000/auth/register_admin', {
+            const response = await fetch('http://localhost:5000/auth/admin_register', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
